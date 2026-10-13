@@ -1,0 +1,6 @@
+name,department,salary,years,remote
+Alice,Engineering,85000,3,True
+Bob,Sales,60000,7,False
+Carol,Engineering,95000,5,True
+David,Marketing,70000,2,False
+Eve,Sales,65000,4,True
