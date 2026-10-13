@@ -1,0 +1,82 @@
+=== Exercise 0: baseline ===
+baseline test R2 (LinearRegression, raw features): 0.6139
+
+=== Exercise 1: log transformations ===
+baseline:     0.6139
+log-features: 0.6211
+delta:        +0.0072
+
+skewness before log:
+total_rooms       4.0907
+total_bedrooms    3.4157
+population        5.2761
+households        3.3867
+dtype: float64
+
+skewness after log:
+total_rooms      -1.0685
+total_bedrooms   -0.9810
+population       -1.0347
+households       -1.0493
+dtype: float64
+
+Decision: KEEP the log transformations. Test R2 changed by +0.0072.
+
+=== Exercise 2: ratio features ===
+(16512, 11)
+['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population', 'households', 'median_income', 'rooms_per_household', 'bedrooms_per_room', 'population_per_household']
+baseline:      0.6139
+log-features:  0.6211
++ ratios:      0.5942
+delta vs base: -0.0197
+delta vs log:  -0.0269
+
+Decision: DO NOT KEEP the ratio features. Cumulative change vs baseline is -0.0197.
+
+=== Exercise 3: polynomial features ===
+input features:  11
+output features: 77
++ ratios:  0.5942
++ poly(2): -2.0998
+delta:     -2.6940
+
++ poly(2) [LinReg]: -2.0998
++ poly(2) [Ridge]:  0.3559
+
+Decision: DO NOT KEEP. Plain LinearRegression score is -2.0998, Ridge score is 0.3559, vs ratio baseline 0.5942.
+
+/usr/local/lib/python3.12/dist-packages/sklearn/preprocessing/_discretization.py:304: FutureWarning: The current default behavior, quantile_method='linear', will be changed to quantile_method='averaged_inverted_cdf' in scikit-learn version 1.9 to naturally support sample weight equivalence properties by default. Pass quantile_method='averaged_inverted_cdf' explicitly to silence this warning.
+  warnings.warn(
+=== Exercise 4: binning ===
+binned ages shape: (16512, 5)
+bin edges: [ 1. 17. 25. 33. 40. 52.]
+binned feature matrix shape: (16512, 15)
++ ratios (no bin):  0.5942
++ ratios + age bin: 0.5948
+delta:              +0.0006
+
+Decision: DO NOT KEEP the binning. Marginal gain is +0.0006.
+
+=== Exercise 5: linear vs forest ===
+  feature_set  linreg_test_R2  rf_test_R2
+0         raw          0.6139      0.8101
+1       + log          0.6211      0.8099
+2    + ratios          0.5942      0.8021
+3   + poly(2)         -2.0998      0.7965
+
+LinReg gain (raw -> ratios): -0.0197
+RF gain (raw -> ratios):     -0.0080
+
+=== Exercise 6: combined engineered baseline ===
+LinearRegression baseline:   0.6139
+LinearRegression engineered: 0.5942  (delta -0.0197)
+RandomForest baseline:       0.8101
+RandomForest engineered:     0.8021  (delta -0.0080)
+
+Experiment log:
+        step  test_R2         kept
+0   baseline   0.6139            -
+1      + log   0.6211         keep
+2   + ratios   0.5942  do not keep
+3  + poly(2)  -2.0998  do not keep
+4  + age bin   0.5948  do not keep
